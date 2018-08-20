@@ -58,11 +58,16 @@ class BaseExperiment(object):
     self.environment.advance(action, reward)
 
     if (t + 1) % self.rec_freq == 0:
-      self.data_dict = {'t': (t + 1),
-                        'instant_regret': instant_regret,
-                        'cum_regret': self.cum_regret,
-                        'action': action,
-                        'unique_id': self.unique_id}
+      self.data_dict = {
+        't': (t + 1),
+        'instant_regret': instant_regret,
+        'cum_regret': self.cum_regret,
+        'action': action,
+        'unique_id': self.unique_id,
+        'prob1': self.environment.probs[0],
+        'prob2': self.environment.probs[1],
+        'prob3': self.environment.probs[2],
+      }
       self.results.append(self.data_dict)
 
 

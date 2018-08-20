@@ -15,10 +15,11 @@ import sys
 import numpy as np
 import pandas as pd
 import plotnine as gg
+from plotnine import *
 
 from base.experiment import BaseExperiment
-from finite_arm.agent_finite import FiniteBernoulliBanditTS
-from finite_arm.env_finite import FiniteArmedBernoulliBandit
+from finite_arm.agent_finite import FiniteBernoulliBanditTS, DriftingFiniteBernoulliBanditTS
+from finite_arm.env_finite import DriftingFiniteArmedBernoulliBandit as FiniteArmedBernoulliBandit
 
 sys.path.append(os.getcwd())
 
@@ -30,8 +31,9 @@ probs = [0.7, 0.8, 0.9]
 n_steps = 1000
 seed = 0
 
-agent = FiniteBernoulliBanditTS(n_arm)
-env = FiniteArmedBernoulliBandit(probs)
+# agent = FiniteBernoulliBanditTS(n_arm)
+agent = DriftingFiniteBernoulliBanditTS(n_arm)
+env = FiniteArmedBernoulliBandit(3)
 experiment = BaseExperiment(agent, env, n_steps=1000,
                             seed=seed, unique_id='example')
 
@@ -42,7 +44,11 @@ experiment.run_experiment()
 
 experiment.results.head()
 
-p = (gg.ggplot(experiment.results)
-     + gg.aes(x='t', y='instant_regret', colour='unique_id')
-     + gg.geom_line())
+p = (ggplot(experiment.results) + aes('t', 'probs1') + geom_point() + geom_line())
 print(p)
+
+
+# p = (gg.ggplot(experiment.results)
+#      + gg.aes(x='t', y='instant_regret', colour='unique_id')
+#      + gg.geom_line())
+# print(p)

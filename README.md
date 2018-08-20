@@ -23,7 +23,7 @@ For the most part our code relies only on standard scientific python tools (nump
 However, we do have two other dependencies that are slightly less standard:
 
 - [plotnine](https://github.com/has2k1/plotnine) a grammar of graphic plotting library for Python.
-- [cvxpy](http://www.cvxpy.org/en/latest/install/index.html) a package for convex optimization, only used for the dynamic pricing example.
+- [cvxpy](https://www.cvxpy.org/install/index.html) a package for convex optimization, only used for the dynamic pricing example.
 
 All code is written assuming a path from `ts_tutorial/src`.
 
