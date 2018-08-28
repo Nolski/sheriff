@@ -38,17 +38,3 @@ experiment = BaseExperiment(agent, env, n_steps=1000,
                             seed=seed, unique_id='example')
 
 experiment.run_experiment()
-
-##############################################################################
-# Simple display / plot of results
-
-experiment.results.head()
-
-p = (ggplot(experiment.results) + aes('t', 'probs1') + geom_point() + geom_line())
-print(p)
-
-
-# p = (gg.ggplot(experiment.results)
-#      + gg.aes(x='t', y='instant_regret', colour='unique_id')
-#      + gg.geom_line())
-# print(p)

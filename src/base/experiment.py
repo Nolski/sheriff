@@ -56,6 +56,7 @@ class BaseExperiment(object):
 
     # Advance the environment (used in nonstationary experiment)
     self.environment.advance(action, reward)
+    pmean = self.agent.get_posterior_mean()
 
     if (t + 1) % self.rec_freq == 0:
       self.data_dict = {
@@ -64,10 +65,10 @@ class BaseExperiment(object):
         'cum_regret': self.cum_regret,
         'action': action,
         'unique_id': self.unique_id,
-        'prob1': self.environment.probs[0],
-        'prob2': self.environment.probs[1],
-        'prob3': self.environment.probs[2],
+        'pmean': self.agent.get_posterior_mean(),
       }
+      for i, mean in enumerate(pmean):
+        self.data_dict['prob' + str(i)] = pmean[i]
       self.results.append(self.data_dict)
 
 
