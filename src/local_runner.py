@@ -73,6 +73,7 @@ plt_df = (df.groupby(['agent', 't'])
           .agg({'instant_regret': np.mean})
           .reset_index())
 
+print(plt_df)
 
 #############################################################################
 # Plotting and analysis (uses plotnine by default)
