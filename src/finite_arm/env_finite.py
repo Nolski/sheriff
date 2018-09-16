@@ -47,14 +47,17 @@ class DriftingFiniteArmedBernoulliBandit(FiniteArmedBernoulliBandit):
   gamma = 0 will allow us to do resampling without drift.
   """
 
-  def __init__(self, n_arm, a0=1., b0=1., gamma=0.01):
+  def __init__(self, n_arm, probs=None, a0=1., b0=1., gamma=0.01):
     self.n_arm = n_arm
     self.a0 = a0
     self.b0 = b0
     self.prior_success = np.array([a0 for a in range(n_arm)])
     self.prior_failure = np.array([b0 for a in range(n_arm)])
     self.gamma = gamma
-    self.probs = np.array([np.random.beta(a0, b0) for a in range(n_arm)])
+    if probs is not None:
+      self.probs = probs
+    else:
+      self.probs = np.array([np.random.beta(a0, b0) for a in range(n_arm)])
 
   def set_prior(self, prior_success, prior_failure):
     # Overwrite the default prior

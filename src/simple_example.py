@@ -14,8 +14,6 @@ import sys
 
 import numpy as np
 import pandas as pd
-import plotnine as gg
-from plotnine import *
 
 from base.experiment import BaseExperiment
 from finite_arm.agent_finite import FiniteBernoulliBanditTS, DriftingFiniteBernoulliBanditTS

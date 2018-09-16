@@ -29,7 +29,6 @@ from base import config_lib
 
 import numpy as np
 import pandas as pd
-import plotnine as gg
 
 # Presented here for clarity.
 LIST_OF_VALID_CONFIGS = ['finite_arm.config_simple',
@@ -77,13 +76,10 @@ plt_df = (df.groupby(['agent', 't'])
 
 #############################################################################
 # Plotting and analysis (uses plotnine by default)
-gg.theme_set(gg.theme_bw(base_size=16, base_family='serif'))
-gg.theme_update(figure_size=(12, 8))
-
-p = (gg.ggplot(plt_df)
-     + gg.aes('t', 'instant_regret', colour='agent')
-     + gg.geom_line())
-print(p)
-
-
-
+# gg.theme_set(gg.theme_bw(base_size=16, base_family='serif'))
+# gg.theme_update(figure_size=(12, 8))
+# 
+# p = (gg.ggplot(plt_df)
+#      + gg.aes('t', 'instant_regret', colour='agent')
+#      + gg.geom_line())
+# print(p)

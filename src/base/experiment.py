@@ -20,8 +20,8 @@ class BaseExperiment(object):
   If you want to do something more fancy then you should extend this class.
   """
 
-  def __init__(self, agent, environment, n_steps,
-               seed=0, rec_freq=1, unique_id='NULL'):
+  def __init__(self, agent, environment, n_steps, seed=0, rec_freq=1,
+               unique_id='NULL', evaluation_pause=0):
     """Setting up the experiment.
 
     Note that unique_id should be used to identify the job later for analysis.
@@ -31,6 +31,7 @@ class BaseExperiment(object):
     self.n_steps = n_steps
     self.seed = seed
     self.unique_id = unique_id
+    self.evaluation_pause = evaluation_pause
 
     self.results = []
     self.data_dict = {}
@@ -45,8 +46,24 @@ class BaseExperiment(object):
     # Compute useful stuff for regret calculations
     optimal_reward = self.environment.get_optimal_reward()
     expected_reward = self.environment.get_expected_reward(action)
+
+    # here is where we simulate the observing of whether the action worked or not
     reward = self.environment.get_stochastic_reward(action)
 
+    if t < self.evaluation_pause:
+      pmean = self.agent.get_posterior_mean()
+
+      if (t + 1) % self.rec_freq == 0:
+        self.data_dict = {
+          't': (t + 1),
+          'action': action,
+          'unique_id': self.unique_id,
+          'pmean': self.agent.get_posterior_mean(),
+        }
+        for i, mean in enumerate(pmean):
+          self.data_dict['prob' + str(i)] = pmean[i]
+        self.results.append(self.data_dict)
+        return
     # Update the agent using realized rewards + bandit learing
     self.agent.update_observation(observation, action, reward)
 
