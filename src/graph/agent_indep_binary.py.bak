@@ -10,9 +10,6 @@ it up into three separate sections for:
 from __future__ import division
 from __future__ import print_function
 
-from builtins import zip
-from builtins import str
-from builtins import range
 import copy
 import numpy as np
 import numpy.linalg as npla
@@ -429,7 +426,7 @@ class EpsilonGreedyIndependentBBWithBinaryReward(
       path += [start_node]
       if start_node == (self.n_stages, 0):
         break
-      start_node = rnd.choice(list(self.internal_env.graph[start_node].keys()))
+      start_node = rnd.choice(self.internal_env.graph[start_node].keys())
     return path
   
   def pick_action(self, observation):
@@ -557,11 +554,11 @@ class StochasticLangevinMCMCIndependentBBWithBinaryReward(
   def _compute_stochastic_gradient(self, x):
     
     if self.history_size<=self.batch_size:
-      sample_indices = list(range(self.history_size))
+      sample_indices = range(self.history_size)
       gradient_scale = 1
     else:
       gradient_scale = self.history_size/self.batch_size
-      sample_indices = rnd.sample(list(range(self.history_size)),self.batch_size)
+      sample_indices = rnd.sample(range(self.history_size),self.batch_size)
     
     grad = np.zeros(self.num_edges)
     for i in sample_indices:

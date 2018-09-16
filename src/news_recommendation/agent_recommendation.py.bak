@@ -3,8 +3,6 @@
 from __future__ import division
 from __future__ import print_function
 
-from builtins import str
-from builtins import range
 import numpy as np
 import numpy.linalg as npla
 import scipy.linalg as spla
@@ -225,11 +223,11 @@ class LangevinTSNewsRecommendation(GreedyNewsRecommendation):
      article.'''
     
     if self.num_plays[article]<=self.batch_size:
-      sample_indices = list(range(self.num_plays[article]))
+      sample_indices = range(self.num_plays[article])
       gradient_scale = 1
     else:
       gradient_scale = self.num_plays[article]/self.batch_size
-      sample_indices = rnd.sample(list(range(self.num_plays[article])),self.batch_size)
+      sample_indices = rnd.sample(range(self.num_plays[article]),self.batch_size)
     
     g = np.zeros(self.dim)
     for i in sample_indices:
