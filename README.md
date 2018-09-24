@@ -1,57 +1,32 @@
-A Tutorial on Thompson Sampling - Accompanying Code
-===================================================
+Sheriff
+========
 
-**Authors:** Dan Russo, Benjamin Van Roy, Abbas Kazerouni, Ian Osband, Zheng Wen
+The solution to all of your bandit related issues.
 
-This is a git repository to release and share the code from our paper [A Tutorial on Thompson Sampling](https://web.stanford.edu/~bvr/pubs/TS_Tutorial.pdf).
+## Introduction
 
-All of the figures and results contained in the paper are generated through running the code contained in this repository.
+Sheriff is a bandit testing project based on much of the code that accompanied the paper [A Tutorial on Thompson Sampling](https://web.stanford.edu/~bvr/pubs/TS_Tutorial.pdf). While much of the code may seem similar, much has changed. It's been upgraded to python3, it's been dockerized, and it has a whole slew of new features that integrate with commcare and a bunch of other things!
 
-Note that as of 29th June 2018 the version of this paper posted to arXiv is out of date, we are working to address this issue.
-Please contact the authors if you have any trouble/questions.
+## Setup
 
-## Installation
+If you're interested in messing around with thompson sampling stuff, I have provided an iPython notebook which runs a test using simulated data. To set up the notebook, create a python3 virtual env like below
 
-First clone the git repository.
-```
-git clone https://github.com/iosband/ts_tutorial.git
-```
-
-Our code is designed for iPython 2.7 (although it will likely work with other versions too).
-We recommend [Anaconda iPython](https://ipython.org/install.html) as a starting point.
-For the most part our code relies only on standard scientific python tools (numpy/scipy/pandas).
-However, we do have two other dependencies that are slightly less standard:
-
-- [plotnine](https://github.com/has2k1/plotnine) a grammar of graphic plotting library for Python.
-- [cvxpy](https://www.cvxpy.org/install/index.html) a package for convex optimization, only used for the dynamic pricing example.
-
-All code is written assuming a path from `ts_tutorial/src`.
-
-For an simple experiment of Thompson sampling versus greedy decision making run:
-```
-cd ts_tutorial/src
-ipython simple_example.py
+```bash
+pip install virtualenv
+virtualenv -p python3 venv
+./venv/bin/activate
 ```
 
+Once you have a virtualenv, install the jupyter requirements with `pip install jupyter-requirements.txt`
 
-## Reproducing paper figures
+And lastly, `cd src` and start the notebook with `jupyter notebook`.
 
-We present the exact code used to generate the figures for each plot in `reproduce_figures.py`.
+### Web Services, Scripts, etc
 
-This is a command line script that can be called from the `src` directory:
-```
-cd ts_tutorial/src
+For our web framework we are using the Falcon python microframework for doing basic API work and caching our commcare API data in mongo for easy access. Using a recent version of `docker-compose` simply run `docker-compose up --build` and the server should start
 
-# For instructions on how to use the script.
-ipython reproduce_figures.py --help
 
-# Reproduces Figure 3 with 1% of the seeds of the paper, save output to /tmp/
-ipython reproduce_figures.py --figure 3 --run_frac 0.01 --data_path /tmp/ --plot_path /tmp/
-```
-
-Reproducing the number of experiments and seeds used in the paper can be extremely computationally expensive.
-For this reason we suggest that either use a very small `run_frac` or delve slightly deeper into the code to set up some parallel/distributed workflow.
-Since the process of developing distributed computation can be complicated and idiosyncratic we leave that to individual users, but present an outline of the high level code below.
+The below is still forked from the original repository as it still applies here.
 
 ## Code structure
 
