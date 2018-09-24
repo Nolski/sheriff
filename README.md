@@ -3,6 +3,8 @@ Sheriff
 
 The solution to all of your bandit related issues.
 
+![](https://media.giphy.com/media/3osBLwgBPWNjWW9INq/giphy.gif)
+
 ## Introduction
 
 Sheriff is a bandit testing project based on much of the code that accompanied the paper [A Tutorial on Thompson Sampling](https://web.stanford.edu/~bvr/pubs/TS_Tutorial.pdf). While much of the code may seem similar, much has changed. It's been upgraded to python3, it's been dockerized, and it has a whole slew of new features that integrate with commcare and a bunch of other things!
