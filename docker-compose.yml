@@ -11,6 +11,8 @@ services:
             - mongodb
         depends_on:
             - mongodb
+        env_file:
+          - sheriff.env
         command: python3 /app/src/scripts/populate_mongo.py
     mongodb:
         image: mongo:latest

@@ -6,8 +6,8 @@ from mongoengine import connect
 
 connect('sheriff', host='mongodb', port=27017)
 
-COMMCARE_USERNAME = 'michael.nolan@rescue.org'
-COMMCARE_PASSWORD = 'SUPER SECRET'
+COMMCARE_USERNAME = os.environ('COMMCARE_USERNAME')
+COMMCARE_PASSWORD = os.environ('COMMCARE_PASSWORD')
 CASES_URL = 'https://www.commcarehq.org/a/billy-excerpt/api/v0.5/case/'
 
 class Resource(object):

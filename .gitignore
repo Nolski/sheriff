@@ -9,3 +9,4 @@ venv
 GTAGS
 GRTAGS
 GPATH
+*.env

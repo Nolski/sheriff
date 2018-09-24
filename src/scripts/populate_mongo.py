@@ -1,6 +1,8 @@
 import falcon
 import json
 import requests
+import os
+
 from requests.auth import HTTPBasicAuth
 from mongoengine import connect, DynamicDocument, StringField
 from mongoengine.errors import NotUniqueError
@@ -16,8 +18,8 @@ class JobOpening(DynamicDocument):
 class JobSeeker(DynamicDocument):
     case_id = StringField(required=True, unique=True)
 
-COMMCARE_USERNAME = 'michael.nolan@rescue.org'
-COMMCARE_PASSWORD = 'SUPER SECRET'
+COMMCARE_USERNAME = os.environ('COMMCARE_USERNAME')
+COMMCARE_PASSWORD = os.environ('COMMCARE_PASSWORD')
 CASES_URL = 'https://www.commcarehq.org/a/billy-excerpt/api/v0.5/case/'
 
 def create_cases(next_params: str, n: int, CaseClass: DynamicDocument) -> Tuple:
