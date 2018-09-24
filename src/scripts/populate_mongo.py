@@ -17,7 +17,7 @@ class JobSeeker(DynamicDocument):
     case_id = StringField(required=True, unique=True)
 
 COMMCARE_USERNAME = 'michael.nolan@rescue.org'
-COMMCARE_PASSWORD = 'k[YfqcEzdCZ42TnDv7&XmMbbL>idTY]yHLJ^kw3qk7Rct;EQT@2XV23Di{oL4*j'
+COMMCARE_PASSWORD = 'SUPER SECRET'
 CASES_URL = 'https://www.commcarehq.org/a/billy-excerpt/api/v0.5/case/'
 
 def create_cases(next_params: str, n: int, CaseClass: DynamicDocument) -> Tuple:
