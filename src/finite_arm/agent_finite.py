@@ -3,9 +3,11 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+import random
 
 from builtins import range
 import numpy as np
+import pandas as pd
 
 from base.agent import Agent
 from base.agent import random_argmax
@@ -20,8 +22,9 @@ class FiniteBernoulliBanditEpsilonGreedy(Agent):
   def __init__(self, n_arm, a0=1, b0=1, epsilon=0.0):
     self.n_arm = n_arm
     self.epsilon = epsilon
-    self.prior_success = np.array([a0 for arm in range(n_arm)])
-    self.prior_failure = np.array([b0 for arm in range(n_arm)])
+    self.prior_success = np.array([3.0 for arm in range(n_arm)])
+    self.prior_failure = np.array([12.0 for arm in range(n_arm)])
+    self.proportions = [np.random.beta(self.prior_success, self.prior_failure)]
 
   def set_prior(self, prior_success, prior_failure):
     # Overwrite the default prior
@@ -30,6 +33,24 @@ class FiniteBernoulliBanditEpsilonGreedy(Agent):
 
   def get_posterior_mean(self):
     return self.prior_success / (self.prior_success + self.prior_failure)
+
+  def get_probabilities(self):
+    samples = pd.DataFrame(
+      np.random.beta(self.prior_success[:-1], self.prior_failure[:-1], size=(100000, 3))
+    )
+    probs = pd.DataFrame([0., 0., 0., 0.])
+    probs = (samples.idxmax(axis=1).value_counts()/100000) * 0.8
+    probs[3] = 0.2
+
+    for i in range(self.n_arm):
+      if i not in probs.keys():
+        probs[str(i)] = 0.
+    try:
+      assert len(probs) == 4
+    except Exception as e:
+      from IPython.core.debugger import Tracer
+      Tracer()()
+    return probs
 
   def get_posterior_sample(self):
     return np.random.beta(self.prior_success, self.prior_failure)
@@ -65,7 +86,11 @@ class FiniteBernoulliBanditTS(FiniteBernoulliBanditEpsilonGreedy):
   def pick_action(self, observation):
     """Thompson sampling with Beta posterior for action selection."""
     sampled_means = self.get_posterior_sample()
-    action = random_argmax(sampled_means)
+
+    if random.random() < .2:
+      action = np.argmax(sampled_means[-1])
+    else:
+      action = random_argmax(sampled_means[:-1])
     return action
 
 

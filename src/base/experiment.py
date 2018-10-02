@@ -13,6 +13,7 @@ from builtins import range
 from builtins import object
 import numpy as np
 import pandas as pd
+import cProfile
 
 
 ##############################################################################
@@ -42,41 +43,52 @@ class BaseExperiment(object):
 
 
   def run_step_maybe_log(self, t):
-    # Evolve the bandit (potentially contextual) for one step and pick action
-    observation = self.environment.get_observation()
-    action = self.agent.pick_action(observation)
+    probs = self.agent.get_probabilities()
+    pmean = self.agent.get_posterior_mean()
+    if t > self.evaluation_pause:
+      for i in range(8):
+        old_observation = self.results[t - self.evaluation_pause + i]
+        # Update the agent using realized rewards + bandit learing
+        self.agent.update_observation(old_observation.get( 'observation' ),
+                                      old_observation.get( 'action' ),
+                                      old_observation.get( 'stochastic_reward' ))
 
-    # Compute useful stuff for regret calculations
-    optimal_reward = self.environment.get_optimal_reward()
-    expected_reward = self.environment.get_expected_reward(action)
+    for i in range(8):
+      # Evolve the bandit (potentially contextual) for one step and pick action
+      observation = self.environment.get_observation()
+      action = self.agent.pick_action(observation)
 
-    # here is where we simulate the observing of whether the action worked or not
-    reward = self.environment.get_stochastic_reward(action)
+      # Compute useful stuff for regret calculations
+      optimal_reward = self.environment.get_optimal_reward()
+      expected_reward = self.environment.get_expected_reward(action)
 
-    if t < self.evaluation_pause:
-      pmean = self.agent.get_posterior_mean()
+      # here is where we simulate the observing of whether the action worked or not
+      reward = self.environment.get_stochastic_reward(action)
 
-      if (t + 1) % self.rec_freq == 0:
-        self.data_dict = {
-          't': (t + 1),
-          'action': action,
-          'unique_id': self.unique_id,
-          'pmean': self.agent.get_posterior_mean(),
-        }
-        for i, mean in enumerate(pmean):
-          self.data_dict['prob' + str(i)] = pmean[i]
-        self.results.append(self.data_dict)
-        return
-    # Update the agent using realized rewards + bandit learing
-    self.agent.update_observation(observation, action, reward)
+      if t < self.evaluation_pause:
+        if (t + 1) % self.rec_freq == 0:
+          self.data_dict = {
+            't': (t + 1),
+            'action': action,
+            'unique_id': self.unique_id,
+            'expected_reward': expected_reward,
+            'stochastic_reward': reward,
+            'observation': observation,
+          }
+          for i, prob in enumerate(probs):
+            self.data_dict['prob' + str(i)] = probs[i]
+          for i, mean in enumerate(pmean):
+            self.data_dict['pmean' + str(i)] = pmean[i]
 
-    # Log whatever we need for the plots we will want to use.
-    instant_regret = optimal_reward - expected_reward
-    self.cum_regret += instant_regret
+          self.results.append(self.data_dict)
+          return
+
+      # Log whatever we need for the plots we will want to use.
+      instant_regret = optimal_reward - expected_reward
+      self.cum_regret += instant_regret
 
     # Advance the environment (used in nonstationary experiment)
     self.environment.advance(action, reward)
-    pmean = self.agent.get_posterior_mean()
 
     if (t + 1) % self.rec_freq == 0:
       self.data_dict = {
@@ -85,10 +97,17 @@ class BaseExperiment(object):
         'cum_regret': self.cum_regret,
         'action': action,
         'unique_id': self.unique_id,
-        'pmean': self.agent.get_posterior_mean(),
+        'expected_reward': expected_reward,
+        'stochastic_reward': reward,
+        'observation': observation,
       }
+      assert len(probs) == 4
+      for i, prob in enumerate(probs):
+        self.data_dict['prob' + str(i)] = probs[i]
+
       for i, mean in enumerate(pmean):
-        self.data_dict['prob' + str(i)] = pmean[i]
+        self.data_dict['pmean' + str(i)] = pmean[i]
+
       self.results.append(self.data_dict)
 
 
